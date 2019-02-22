@@ -1,13 +1,13 @@
 Summary
 =======
 
-This software can be used to reproduce the results in "SimplE Embedding for Link Prediction in Knowledge Graphs" paper. It can be also used to learn `SimplE` models for other datasets. The software can be also used as a framework to implement new tensor factorization models (implementations for `TransE` and `ComplEx` are included as two examples).
+This is a faster implementation of the model proposed in [SimplE Embedding for Link Prediction in Knowledge Graphs](https://papers.nips.cc/paper/7682-simple-embedding-for-link-prediction-in-knowledge-graphs) for knowledge graph embedding. It can be also used to learn `SimplE` models for any input model. The software can be also used as a framework to implement new knowledge graph embedding models.
 
 ## Dependencies
 
-* `Python` version 3.6 or higher
-* `Numpy` version 1.13.1 or higher
-* `PyTorch` version 1.1.0 or higher
+* `Python` version 3.6
+* `Numpy` version 1.13.1
+* `PyTorch` version 1.0.1
 
 ## Usage
 
