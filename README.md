@@ -41,6 +41,17 @@ As an example, running the `SimplE` model on `wn18` will save the embeddings in 
     $ <Current Directory>/models/wn18/
     
 
+## Reproducing the Results in the Paper
+
+In order to reproduce the results presented in the paper, you should run the following commands:
+
+### WN18
+
+RUN `python main.py -ne 1000 -lr 0.1 -reg 0.03 -dataset WN18 -emb_dim 200 -neg_ratio 1 -batch_size 1415 -save_each 50`
+
+### FB15K
+
+RUN `python main.py -ne 1000 -lr 0.05 -reg 0.1 -dataset FB15K -emb_dim 200 -neg_ratio 10 -batch_size 4832 -save_each 50`
 
 ## Learned Embeddings for SimplE
 
