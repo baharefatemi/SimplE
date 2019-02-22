@@ -5,35 +5,46 @@ This software can be used to reproduce the results in "SimplE Embedding for Link
 
 ## Dependencies
 
-* `Python` version 2.7 or higher
+* `Python` version 3.6 or higher
 * `Numpy` version 1.13.1 or higher
-* `Tensorflow` version 1.1.0 or higher
+* `PyTorch` version 1.1.0 or higher
 
 ## Usage
 
-To run a model `M` on a dataset `D`, do the following steps:
-* `cd` to the directory where `main.py` is
-* Run `python main.py -m M -d D`
+To run SimplE you should define the following parameters:
 
-Examples (commands start after $):
+`ne`: number of epochs
 
-    $ python main.py -m SimplE_ignr -d wn18
-    $ python main.py -m SimplE_avg -d fb15k
-    $ python main.py -m ComplEx -d wn18
+`lr`: learning rate
+
+`reg`:l2 regularization parameter
+
+`dataset`: The dataset you want to run SimplE on
+
+`emb_dim`: embedding dimension
+
+`neg_ratio`: number of negative examples per positive example
+
+`batch_size`: batch size
+
+`save_each`: validate every k epochs
+
+* Run `python main.py -ne ne -lr lr -reg reg -dataset dataset -emb_dim emb_dim -neg_ratio neg_ratio -batch_size batch_size -save_each save_each`
+
 
 Running a model `M` on a dataset `D` will save the embeddings in a folder with the following address:
 
-    $ <Current Directory>/M_weights/D/
+    $ <Current Directory>/models/D/
 
-As an example, running the `SimplE_ignr` model on `wn18` will save the embeddings in the following folder:
+As an example, running the `SimplE` model on `wn18` will save the embeddings in the following folder:
 
-    $ <Current Directory>/SimplE_ignr_weights/wn18/
+    $ <Current Directory>/models/wn18/
+    
+
 
 ## Learned Embeddings for SimplE
 
-The best embeddings learned for `SimplE_ignr` and `SimplE_avg` on `wn18` and `fb15k` can be downloaded from [this link](https://drive.google.com/file/d/1fSxdFbSIcS4w4mAHUhKewjmXCcbOGqM7/view?usp=sharing) and [this link](https://drive.google.com/file/d/1hpDS34BxNfbr6xGeut5q5nvx8fW98qCe/view?usp=sharing) respectively.
 
-To use these embeddings, place them in the same folder as `main.py`, load the embeddings and use them.
 
 ## Publication
 
