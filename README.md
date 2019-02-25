@@ -8,8 +8,8 @@ This is a faster implementation of the model proposed in [SimplE Embedding for L
 ## Dependencies
 
 * `Python` version 3.6
-* `Numpy` version 1.13.1
-* `PyTorch` version 1.0.1
+* `Numpy` version 1.15.4
+* `PyTorch` version 1.0.0
 
 ## Usage
 
