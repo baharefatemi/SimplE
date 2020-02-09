@@ -16,7 +16,7 @@ class Tester:
         self.all_facts_as_set_of_tuples = set(self.allFactsAsTuples())
 
     def get_rank(self, sim_scores):#assuming the test fact is the first one
-        return (sim_scores >= sim_scores[0]).sum() + 1.0
+        return (sim_scores >= sim_scores[0]).sum()
 
     def create_queries(self, fact, head_or_tail):
         head, rel, tail = fact
