@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import os 
-
+import numpy as np
 class Trainer:
     def __init__(self, dataset, args):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -12,6 +12,9 @@ class Trainer:
         self.dataset = dataset
         self.args = args
         
+
+        print("PyTorch version:", torch.__version__)
+        print("Numpy version:", np.__version__)
     def train(self):
         self.model.train()
 
@@ -46,5 +49,5 @@ class Trainer:
         directory = "models/" + self.dataset.name + "/"
         if not os.path.exists(directory):
             os.makedirs(directory)
-        torch.save(self.model, directory + str(chkpnt) + ".chkpnt")
+        torch.save(self.model, directory + str(self.args.emb_dim) + str(chkpnt) + ".chkpnt")
 
