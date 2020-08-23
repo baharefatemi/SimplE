@@ -3,7 +3,6 @@ Summary
 
 This is a faster implementation of the model proposed in [SimplE Embedding for Link Prediction in Knowledge Graphs](https://papers.nips.cc/paper/7682-simple-embedding-for-link-prediction-in-knowledge-graphs) for knowledge graph embedding. It can be also used to learn `SimplE` models for any input model. The software can be also used as a framework to implement new knowledge graph embedding models.
 
-**Note: Please download the train file for FB15k from [Here](https://github.com/Mehran-k/SimplE/tree/master/fb15k).**
 
 ## Dependencies
 
