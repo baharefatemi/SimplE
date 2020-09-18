@@ -10,10 +10,10 @@ class SimplE(nn.Module):
         self.emb_dim = emb_dim
         self.device = device
 
-        self.ent_h_embs   = nn.Embedding(num_ent, emb_dim).to(device)
-        self.ent_t_embs   = nn.Embedding(num_ent, emb_dim).to(device)
-        self.rel_embs     = nn.Embedding(num_rel, emb_dim).to(device)
-        self.rel_inv_embs = nn.Embedding(num_rel, emb_dim).to(device)
+        self.ent_h_embs   = nn.Embedding(num_ent, emb_dim).cuda()
+        self.ent_t_embs   = nn.Embedding(num_ent, emb_dim).cuda()
+        self.rel_embs     = nn.Embedding(num_rel, emb_dim).cuda()
+        self.rel_inv_embs = nn.Embedding(num_rel, emb_dim).cuda()
 
         sqrt_size = 6.0 / math.sqrt(self.emb_dim)
         nn.init.uniform_(self.ent_h_embs.weight.data, -sqrt_size, sqrt_size)

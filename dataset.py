@@ -2,25 +2,67 @@ import numpy as np
 import random
 import torch
 import math
+import collections
+from scipy import stats
 
 class Dataset:
-    def __init__(self, ds_name):
+    def __init__(self, ds_name, bin_setting=-1, nbins=-1):
         self.name = ds_name
         self.dir = "datasets/" + ds_name + "/"
         self.ent2id = {}
         self.rel2id = {}
-        self.data = {spl: self.read(self.dir + spl + ".txt") for spl in ["train", "valid", "test"]}
+        self.entity_counter = collections.Counter()
+        self.head_relation_counter = collections.Counter()
+        self.relation_tail_counter = collections.Counter()
+
+        self.freqs_test = []
+        self.data = {"train": self.read_train(self.dir + "train.txt"), "valid": self.read_val(self.dir + "valid.txt"), "test": self.read_test(self.dir + "test.txt")}
         self.batch_index = 0
-       
-    def read(self, file_path):
+        self.bin_setting = bin_setting
+        self.nbins = nbins
+
+        self.read_test_counter(self.dir + "test.txt")
+        self.bin_edges = self.find_bins()
+
+        print("bin edges:", self.bin_edges)
+
+    def read_train(self, file_path):
         with open(file_path, "r") as f:
             lines = f.readlines()
-        
         triples = np.zeros((len(lines), 3))
         for i, line in enumerate(lines):
             triples[i] = np.array(self.triple2ids(line.strip().split("\t")))
         return triples
     
+    def read_val(self, file_path):
+        with open(file_path, "r") as f:
+            lines = f.readlines()
+        
+        triples = np.zeros((len(lines), 3))
+        for i, line in enumerate(lines):
+            triples[i] = np.array(self.triple2ids_val(line.strip().split("\t")))
+        return triples
+
+    def read_test(self, file_path):
+        with open(file_path, "r") as f:
+            lines = f.readlines()
+        
+        triples = np.zeros((len(lines), 3))
+        for i, line in enumerate(lines):
+            triples[i] = np.array(self.triple2ids_val(line.strip().split("\t")))
+        return triples
+
+
+    def read_test_counter(self, file_path):
+        with open(file_path, "r") as f:
+            lines = f.readlines()
+        
+        triples = np.zeros((len(lines), 3))
+        for i, line in enumerate(lines):
+            triples[i] = np.array(self.triple2ids_test_counter(line.strip().split("\t")))
+        return triples
+
+
     def num_ent(self):
         return len(self.ent2id)
     
@@ -28,13 +70,36 @@ class Dataset:
         return len(self.rel2id)
                      
     def triple2ids(self, triple):
+        self.head_relation_counter[(self.get_ent_id(triple[0]), self.get_rel_id(triple[1]))] += 1
+        self.relation_tail_counter[(self.get_rel_id(triple[1]), self.get_ent_id(triple[2]))] += 1
         return [self.get_ent_id(triple[0]), self.get_rel_id(triple[1]), self.get_ent_id(triple[2])]
-                     
+    
+    def triple2ids_val(self, triple):
+        return [self.ent2id[triple[0]], self.get_rel_id(triple[1]), self.ent2id[triple[2]]]
+    
+    def triple2ids_test_counter(self, triple):
+        if self.bin_setting == 0:
+            # min(freq[a], freq[b])
+            self.freqs_test.append(min(self.entity_counter[self.ent2id[triple[0]]], self.entity_counter[self.ent2id[triple[2]]]))
+        elif self.bin_setting == 1:
+            # freq[a] + freq[b]
+            self.freqs_test.append(self.entity_counter[self.ent2id[triple[0]]] + self.entity_counter[self.ent2id[triple[2]]])
+        elif self.bin_setting == 2:
+            # freq[a], freq[b]
+            self.freqs_test.append(self.entity_counter[self.ent2id[triple[0]]])
+            self.freqs_test.append(self.entity_counter[self.ent2id[triple[2]]])
+        elif self.bin_setting == 3:
+            self.freqs_test.append(self.head_relation_counter[(self.ent2id[triple[0]], self.rel2id[triple[1]])])
+            self.freqs_test.append(self.relation_tail_counter[(self.rel2id[triple[1]], self.ent2id[triple[2]])])
+
+   
     def get_ent_id(self, ent):
         if not ent in self.ent2id:
             self.ent2id[ent] = len(self.ent2id)
+        self.entity_counter[self.ent2id[ent]] += 1
         return self.ent2id[ent]
-            
+
+
     def get_rel_id(self, rel):
         if not rel in self.rel2id:
             self.rel2id[rel] = len(self.rel2id)
@@ -81,4 +146,26 @@ class Dataset:
 
     def num_batch(self, batch_size):
         return int(math.ceil(float(len(self.data["train"])) / batch_size))
+
+
+    def find_bins(self):
+        percentage = []
+        for counter in range(self.nbins + 1):
+            percentage.append(counter/self.nbins)
+        
+        bin_edges = stats.mstats.mquantiles(list(self.freqs_test), percentage)
+
+        bin_counter = collections.Counter()
+
+        for val in self.freqs_test:
+            bin_counter[self.which_bin(val, bin_edges)] += 1
+        print("bin counter:", bin_counter)
+
+        return bin_edges
+
+    def which_bin(self, frequency, bin_edges):
+        for ind, val in enumerate(bin_edges[1:]):
+            if frequency < val:
+                return ind
+        return len(bin_edges) - 2
 
